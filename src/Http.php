@@ -32,6 +32,29 @@ class Http{
         # 返回uri
         return $uri;
     }
+
+    /**
+     * 获取请求url
+     * @return mixed|string
+     */
+    public static function get_url()
+    {
+        if(isset($_SERVER['REQUEST_URI'])){
+            $url = $_SERVER['REQUEST_URI'];
+        }else{
+            if(isset($_SERVER['argv'])){
+                $url = $_SERVER['PHP_SELF'].'?'.$_SERVER['argv'][0];
+            }else{
+                $url = $_SERVER['PHP_SELF'].'?'.$_SERVER['QUERY_STRING'];
+            }
+        }
+        # 过滤 GET 参数
+        $url = preg_replace('!\?.*!','',$url);
+        # 过滤头部的分隔符
+        $url = preg_replace('!^/!','',$url);
+        # 返回url
+        return $url;
+    }
     /**
      * Http重定向
      * @param $url
