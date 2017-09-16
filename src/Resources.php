@@ -15,6 +15,24 @@ class Resources
         'js'=>__DIR__.'/../test/js',
     ];
 
+    /**
+     * 设置资源路由
+     * @param $folder
+     */
+    public static function set_folder($folder)
+    {
+        self::$folder = $folder;
+    }
+
+    /**
+     * 获取资源路由
+     * @return array
+     */
+    public static function get_folder()
+    {
+        return self::$folder;
+    }
+    # 响应内容
     public static function out()
     {
         # 获取url
@@ -54,7 +72,7 @@ class Resources
         }
     }
     # 安全过滤
-    public static function Authcheck($url)
+    private static function Authcheck($url)
     {
         if(strpos($url,'..') || strpos($url,'../') || strpos($url,'/..') || preg_match('!\.php$!',$url)){
             Http::send_http_status(404);
