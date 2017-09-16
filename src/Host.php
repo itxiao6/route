@@ -14,7 +14,6 @@ class Host
      */
     public static function get_app($host)
     {
-
-        return 'Home';
+        return C($host,'host');
     }
 }
