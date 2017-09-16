@@ -27,7 +27,7 @@ class Http{
         $uri = preg_replace('!\?.*!','',$uri);
         # 过滤尾部的分隔符
         $uri = preg_replace('!'.$key_word.'$!','',$uri);
-        # 过滤头部的分隔符
+        # 过滤头部的/
         $uri = preg_replace('!^/!','',$uri);
         # 返回uri
         return $uri;
@@ -50,7 +50,7 @@ class Http{
         }
         # 过滤 GET 参数
         $url = preg_replace('!\?.*!','',$url);
-        # 过滤头部的分隔符
+        # 过滤头部的/
         $url = preg_replace('!^/!','',$url);
         # 返回url
         return $url;
@@ -245,6 +245,7 @@ class Http{
             # 确保FastCGI模式下正常
             header('Status:'.$code.' '.$_status[$code]);
         }
+        exit();
     }
     /**
      * 判断是手机还是PC
