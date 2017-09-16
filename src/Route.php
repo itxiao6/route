@@ -101,9 +101,23 @@ class Route{
                 break;
         }
     }
+
+    /**
+     * 设置自定义MVC驱动
+     * @param $driver
+     */
     public function set_driver($driver)
     {
+        self::$driver = $driver;
+    }
 
+    /**
+     * 获取MVC自定义驱动
+     * @return bool
+     */
+    public function get_driver()
+    {
+        return self::$driver;
     }
     /**
      * 设置url分隔符
