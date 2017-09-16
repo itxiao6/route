@@ -36,7 +36,7 @@ class Route{
     protected static $driver = false;
 
     # 初始化路由
-    public static function init()
+    public static function init($callback = null)
     {
         # 获取请求的url
         self::$uri = Http::get_uri(self::$keyword);
@@ -45,6 +45,10 @@ class Route{
         # 判断驱动是否被实例化
         if(self::$driver == false){
             self::$driver = new Driver;
+        }
+        # 调用回调
+        if($callback!=null){
+            $callback(self::$app,self::$controller,self::$action);
         }
         # 调用接口
         if(self::$driver -> check(self::$app,self::$controller,self::$action)){
@@ -61,7 +65,7 @@ class Route{
         }
     }
     # 拆分uri
-    public static function explode_uri()
+    public static function explode_uri($callback = null)
     {
         # 判断是否为首页
         if(self::$uri!=''){
@@ -100,12 +104,6 @@ class Route{
                 # 什么都不设置
                 break;
         }
-        # 应用名
-        define('APP_NAME',self::$app);
-        # 控制器名
-        define('CONTROLLER_NAME',self::$controller);
-        # 操作名
-        define('ACTION_NAME',self::$action);
     }
 
     /**
