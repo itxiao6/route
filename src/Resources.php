@@ -7,7 +7,7 @@ namespace Itxiao6\Route;
  */
 class Resources
 {
-    public static function put()
+    public static function out()
     {
 
     }

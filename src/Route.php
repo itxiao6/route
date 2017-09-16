@@ -52,7 +52,7 @@ class Route{
             echo self::$driver -> start(self::$app,self::$controller,self::$action);
         }else if(Resources::check()){
             # 寻找资源路由
-            exit(Resources::put());
+            exit(Resources::out());
         }else{
             throw new \Exception('找不到路由'.self::$app.','.self::$controller.','.self::$action);
             # 抛异常找不到路由
