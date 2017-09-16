@@ -1,0 +1,19 @@
+{
+  "name": "itxiao6/route",
+  "description": "MinKernel.Wechat",
+  "keywords": ["route", "Minkernel", "隐式路由"],
+  "homepage": "http://github.com/itxiao6/route",
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "itxiao6",
+      "email": "itxiao6@qq.com"
+    }
+  ],
+  "require": {
+    "itxiao6/wechat":"1.3"
+  },
+  "autoload": {
+    "psr-4": { "Itxiao6\\Route\\": "./src" }
+  }
+}
