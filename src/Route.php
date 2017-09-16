@@ -36,7 +36,7 @@ class Route{
     protected static $driver = false;
 
     # 初始化路由
-    public static function init($callback = null)
+    public static function init(\Closure $callback = null)
     {
         # 获取请求的url
         self::$uri = Http::get_uri(self::$keyword);
@@ -65,7 +65,7 @@ class Route{
         }
     }
     # 拆分uri
-    public static function explode_uri($callback = null)
+    public static function explode_uri()
     {
         # 判断是否为首页
         if(self::$uri!=''){
