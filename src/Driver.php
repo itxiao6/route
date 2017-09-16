@@ -15,8 +15,10 @@ class Driver implements IDriver
     {
         # 组合类名
         $controller_class = '\App\\'.$app.'\\Controller\\'.$controller;
-        # 启动控制器
-        return $controller_class::$action();
+        # 实例化控制器
+        $controller = new $controller_class;
+        # 调用方法
+        $controller -> $action();
     }
     # 检查方法是否存在
     public function check($app,$controller,$action)
