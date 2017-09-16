@@ -100,6 +100,12 @@ class Route{
                 # 什么都不设置
                 break;
         }
+        # 应用名
+        define('APP_NAME',self::$app);
+        # 控制器名
+        define('CONTROLLER_NAME',self::$controller);
+        # 操作名
+        define('ACTION_NAME',self::$action);
     }
 
     /**
