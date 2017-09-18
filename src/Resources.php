@@ -7,6 +7,10 @@ namespace Itxiao6\Route;
  */
 class Resources
 {
+    protected static $file_type = [
+        '.css'=>'text/css',
+        '.js'=>'application/javascript',
+    ];
     /**
      * 资源路由的文件夹
      * @var array
@@ -39,6 +43,8 @@ class Resources
         self::Authcheck($url);
         # 获取目录名
         $folder = substr($url,0,strpos($url,'/'));
+        # 设置协议头:内容类型
+        header('Content-Type:'.self::$file_type[substr( $url , strrpos($url , '.'))]);
         # 替换目录名
         $url = preg_replace('!^'.$folder.'!','',$url);
         # 高效率
@@ -73,6 +79,22 @@ class Resources
             }
         }
         return false;
+    }
+
+    /**
+     * 设置文件的响应方式
+     * @param $file_type
+     * @param null $value
+     */
+    public static function set_file_type($file_type,$value = null)
+    {
+        if(is_array($file_type)){
+            foreach ($file_type as $key=>$value){
+                self::$file_type[$key] = $value;
+            }
+        }else{
+            self::$file_type[$file_type] = $value;
+        }
     }
     # 安全过滤
     private static function Authcheck($url)
