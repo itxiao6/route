@@ -100,7 +100,18 @@ class Route{
                 # 只设置应用名
                 self::set_default_app($result[0]);
                 break;
+            case 0:
+                # 什么都不设置
+                break;
             default:
+                if(count($result) > 3){
+                    # 应用名
+                    self::set_default_app($result[0]);
+                    # 控制器名
+                    self::set_default_controller($result[1]);
+                    # 操作名
+                    self::set_default_action($result[2]);
+                }
                 # 什么都不设置
                 break;
         }

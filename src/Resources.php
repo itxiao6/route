@@ -11,9 +11,7 @@ class Resources
      * 资源路由的文件夹
      * @var array
      */
-    protected static $folder = [
-        'js'=>__DIR__.'/../test/js',
-    ];
+    protected static $folder = [];
 
     /**
      * 设置资源路由
@@ -41,9 +39,11 @@ class Resources
         self::Authcheck($url);
         # 获取目录名
         $folder = substr($url,0,strpos($url,'/'));
+        # 替换目录名
+        $url = preg_replace('!^'.$folder.'!','',$url);
         # 高效率
-        if(isset(self::$folder[$folder]) && file_exists(self::$folder[$folder].'/'.$url)){
-            return file_get_contents(self::$folder[$folder].'/'.$url);
+        if(isset(self::$folder[$folder]) && file_exists(self::$folder[$folder].$url)){
+            return file_get_contents(self::$folder[$folder].$url);
         }
         # 遍历目录
         foreach(self::$folder as $key=>$item){
@@ -60,16 +60,19 @@ class Resources
         self::Authcheck($url);
         # 获取目录名
         $folder = substr($url,0,strpos($url,'/'));
+        # 替换目录名
+        $url = preg_replace('!^'.$folder.'!','',$url);
         # 高效率
-        if(isset(self::$folder[$folder]) && file_exists(self::$folder[$folder].'/'.$url)){
-            return file_get_contents(self::$folder[$folder].'/'.$url);
+        if(isset(self::$folder[$folder]) && file_exists(self::$folder[$folder].$url)){
+            return true;
         }
         # 遍历目录
         foreach(self::$folder as $key=>$item){
-            if(file_exists(self::$folder[$key].'/'.$url)){
-                return file_get_contents(self::$folder[$key].'/'.$url);
+            if(file_exists(self::$folder[$folder].$url)){
+                return true;
             }
         }
+        return false;
     }
     # 安全过滤
     private static function Authcheck($url)
