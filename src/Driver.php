@@ -18,7 +18,7 @@ class Driver implements IDriver
         # 实例化控制器
         $controller = new $controller_class;
         # 调用方法
-        $controller -> $action();
+        return $controller -> $action();
     }
     # 检查方法是否存在
     public function check($app,$controller,$action)

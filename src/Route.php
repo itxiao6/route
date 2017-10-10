@@ -53,7 +53,7 @@ class Route{
         # 调用接口
         if(self::$driver -> check(self::$app,self::$controller,self::$action)){
             # 启动程序
-            echo self::$driver -> start(self::$app,self::$controller,self::$action);
+            return self::$driver -> start(self::$app,self::$controller,self::$action);
         }else if(Resources::check()){
             # 寻找资源路由
             echo  Resources::out();
