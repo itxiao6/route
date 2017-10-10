@@ -1,5 +1,6 @@
 <?php
 namespace Itxiao6\Route;
+use Kernel\Config;
 /**
  * 域名绑定
  * Class Host
@@ -14,6 +15,6 @@ class Host
      */
     public static function get_app($host)
     {
-        return C($host,'host');
+        return Config::get('host',$host);
     }
 }

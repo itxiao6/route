@@ -12,15 +12,15 @@ class Http{
      */
     public static function get_uri($key_word = '/')
     {
-        if(isset($_SERVER['REQUEST_URI'])){
+//        if(isset($_SERVER['REQUEST_URI'])){
             $uri = $_SERVER['REQUEST_URI'];
-        }else{
-            if(isset($_SERVER['argv'])){
-                $uri = $_SERVER['PHP_SELF'].'?'.$_SERVER['argv'][0];
-            }else{
-                $uri = $_SERVER['PHP_SELF'].'?'.$_SERVER['QUERY_STRING'];
-            }
-        }
+//        }else{
+//            if(isset($_SERVER['argv'])){
+//                $uri = $_SERVER['PHP_SELF'].'?'.$_SERVER['argv'][0];
+//            }else{
+//                $uri = $_SERVER['PHP_SELF'].'?'.$_SERVER['QUERY_STRING'];
+//            }
+//        }
         # 过滤后缀
         $uri = preg_replace('!\.aspx|\.php|\.html|\.htmls|\.aspx|\.jsp|\.asp!','',$uri);
         # 过滤GET 参数
