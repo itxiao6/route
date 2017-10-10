@@ -56,7 +56,7 @@ class Route{
             return self::$driver -> start(self::$app,self::$controller,self::$action);
         }else if(Resources::check()){
             # 寻找资源路由
-            echo  Resources::out();
+            return Resources::out();
             # 结束程序
             exit();
         }else{
