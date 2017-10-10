@@ -37,14 +37,20 @@ class Resources
     # 响应内容
     public static function out()
     {
+        global $content_type;
         # 获取url
         $url = Http::get_url();
         # 安全过滤
         self::Authcheck($url);
         # 获取目录名
         $folder = substr($url,0,strpos($url,'/'));
-        # 设置协议头:内容类型
-        header('Content-Type:'.self::$file_type[substr( $url , strrpos($url , '.'))]);
+        # 判断是否为Swoole
+        if(SWOOLE==true){
+            $content_type = self::$file_type[substr( $url , strrpos($url , '.'))];
+        }else{
+            # 设置协议头:内容类型
+            header('Content-Type:'.self::$file_type[substr( $url , strrpos($url , '.'))]);
+        }
         # 替换目录名
         $url = preg_replace('!^'.$folder.'!','',$url);
         # 高效率
