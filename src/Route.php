@@ -142,18 +142,22 @@ class Route{
      * 设置自定义MVC驱动
      * @param $driver
      */
-    public function set_driver($driver)
+    public function set_mvc_driver($driver)
     {
-        self::$driver = $driver;
+        self::$mvc_driver = $driver;
     }
 
     /**
      * 获取MVC自定义驱动
      * @return bool
      */
-    public function get_driver()
+    public function get_mvc_driver()
     {
-        return self::$driver;
+        # 判断MVC驱动是否被实例化
+        if(!is_object(self::$mvc_driver)){
+            self::$mvc_driver = new self::$mvc_driver;
+        }
+        return self::$mvc_driver;
     }
 
     /**
@@ -171,6 +175,10 @@ class Route{
      */
     public static function get_resources_driver()
     {
+        # 判断资源路由驱动是否被实例化
+        if(!is_object(self::$resources_driver)){
+            self::$resources_driver = new self::$resources_driver;
+        }
         return self::$resources_driver;
     }
 

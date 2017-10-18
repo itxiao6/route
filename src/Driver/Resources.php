@@ -9,7 +9,7 @@ use Itxiao6\Route\Bridge\Http;
  */
 class Resources implements \Itxiao6\Route\Interfaces\Resources
 {
-    protected static $file_type = [
+    protected $file_type = [
         '.css'=>'text/css',
         '.js'=>'application/javascript',
     ];
@@ -17,74 +17,78 @@ class Resources implements \Itxiao6\Route\Interfaces\Resources
      * 资源路由的文件夹
      * @var array
      */
-    protected static $folder = [];
+    protected $folder = [];
 
     /**
      * 设置资源路由
      * @param $folder
+     * @return $this
      */
-    public static function set_folder($folder)
+    public function set_folder($folder)
     {
-        self::$folder = $folder;
+        $this -> folder = $folder;
+        return $this;
     }
 
     /**
      * 获取资源路由
      * @return array
      */
-    public static function get_folder()
+    public function get_folder()
     {
-        return self::$folder;
+        return $this -> folder;
     }
+
     /**
      * 设置文件的响应类型
      * @param $file_type
      * @param null $value
+     * @return $this
      */
-    public static function set_file_type($file_type,$value = null)
+    public function set_file_type($file_type,$value = null)
     {
         if(is_array($file_type)){
             foreach ($file_type as $key=>$value){
-                self::$file_type[$key] = $value;
+                $this -> file_type[$key] = $value;
             }
         }else{
-            self::$file_type[$file_type] = $value;
+            $this -> file_type[$file_type] = $value;
         }
+        return $this;
     }
 
     /**
      * 获取文件响应类型
      * @return array
      */
-    public static function get_file_type()
+    public function get_file_type()
     {
-        return self::$file_type;
+        return $this -> file_type;
     }
 
     /**
      * 响应内容
      */
-    public static function out()
+    public function out()
     {
-        global $content_type;
         # 获取url
         $url = Http::get_url();
         # 安全过滤
-        self::Authcheck($url);
+        $this -> Authcheck($url);
         # 获取目录名
         $folder = substr($url,0,strpos($url,'/'));
         # 设置协议头:内容类型
-        header('Content-Type:'.self::$file_type[substr( $url , strrpos($url , '.'))]);
+        header('Content-Type:'.$this -> file_type[substr( $url , strrpos($url , '.'))]);
         # 替换目录名
         $url = preg_replace('!^'.$folder.'!','',$url);
         # 高效率
-        if(isset(self::$folder[$folder]) && file_exists(self::$folder[$folder].$url)){
-            exit(file_get_contents(self::$folder[$folder].$url));
+        if(isset($this -> folder[$folder]) && file_exists($this -> folder[$folder].$url)){
+            exit(file_get_contents($this -> folder[$folder].$url));
         }
         # 遍历目录
-        foreach(self::$folder as $key=>$item){
-            if(file_exists(self::$folder[$key].'/'.$url)){
-                exit(file_get_contents(self::$folder[$key].'/'.$url));
+        foreach($this -> folder as $key=>$item){
+            if(file_exists($this -> folder[$key].'/'.$url)){
+                exit(file_get_contents($this -> folder[$key].'/'.$url));
             }
         }
     }
@@ -93,23 +97,23 @@ class Resources implements \Itxiao6\Route\Interfaces\Resources
      * 检查文件是否存在
      * @return bool
      */
-    public static function check()
+    public function check()
     {
         # 获取url
         $url = Http::get_url();
         # 安全过滤
-        self::Authcheck($url);
+        $this -> Authcheck($url);
         # 获取目录名
         $folder = substr($url,0,strpos($url,'/'));
         # 替换目录名
         $url = preg_replace('!^'.$folder.'!','',$url);
         # 高效率
-        if(isset(self::$folder[$folder]) && file_exists(self::$folder[$folder].$url)){
+        if(isset($this -> folder[$folder]) && file_exists($this -> folder[$folder].$url)){
             return true;
         }
         # 遍历目录
-        foreach(self::$folder as $key=>$item){
-            if(file_exists(self::$folder[$folder].$url)){
+        foreach($this -> folder as $key=>$item){
+            if(file_exists($this -> folder[$folder].$url)){
                 return true;
             }
         }
@@ -120,7 +124,7 @@ class Resources implements \Itxiao6\Route\Interfaces\Resources
      * 参数安全过滤
      * @param $url
      */
-    private static function Authcheck($url)
+    private function Authcheck($url)
     {
         if(strpos($url,'..') || strpos($url,'../') || strpos($url,'/..') || preg_match('!\.php$!',$url)){
             Http::send_http_status(404);
