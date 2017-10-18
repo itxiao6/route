@@ -1,16 +1,23 @@
 <?php
-namespace Itxiao6\Route;
+namespace Itxiao6\Route\Driver;
 use ReflectionClass;
 use ReflectionMethod;
 use Reflection;
 /**
  * MVC默认驱动
- * Class Driver
- * @package Itxiao6\Route
+ * Class MVC
+ * @package Itxiao6\Route\Driver
  */
-class Driver implements IDriver
+class MVC implements \Itxiao6\Route\Interfaces\MVC
 {
-    # 启动MVC
+
+    /**
+     * 启动MVC
+     * @param $app
+     * @param $controller
+     * @param $action
+     * @return mixed
+     */
     public function start($app,$controller,$action)
     {
         # 组合类名
@@ -20,7 +27,14 @@ class Driver implements IDriver
         # 调用方法
         return $controller -> $action();
     }
-    # 检查方法是否存在
+
+    /**
+     * 检查方法是否存在
+     * @param $app
+     * @param $controller
+     * @param $action
+     * @return bool
+     */
     public function check($app,$controller,$action)
     {
         # 组合类名

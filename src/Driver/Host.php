@@ -1,12 +1,12 @@
 <?php
-namespace Itxiao6\Route;
+namespace Itxiao6\Route\Driver;
 use Kernel\Config;
 /**
  * 域名绑定
  * Class Host
- * @package Itxiao6\Route
+ * @package Itxiao6\Route\Driver
  */
-class Host
+class Host implements \Itxiao6\Route\Interfaces\Host
 {
     /**
      * 获取域名绑定的模块

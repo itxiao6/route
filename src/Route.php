@@ -1,6 +1,11 @@
 <?php
 namespace Itxiao6\Route;
 use Exception;
+use Itxiao6\Route\Bridge\Http;
+use Itxiao6\Route\Driver\Host;
+use Itxiao6\Route\Driver\MVC;
+use Itxiao6\Route\Driver\Resources;
+
 # 路由类
 class Route{
     /**
@@ -31,40 +36,56 @@ class Route{
 
     /**
      * MAC驱动
-     * @var bool
+     * @var string
      */
-    protected static $driver = false;
+    protected static $mvc_driver = MVC::class;
 
-    # 初始化路由
+    /**
+     * 资源路由驱动
+     * @var string
+     */
+    protected static $resources_driver = Resources::class;
+
+    /**
+     * 初始化路由
+     * @param \Closure|null $callback
+     * @return mixed
+     * @throws Exception
+     */
     public static function init(\Closure $callback = null)
     {
         # 获取请求的url
         self::$uri = Http::get_uri(self::$keyword);
         # 拆分数据
         self::explode_uri();
-        # 判断驱动是否被实例化
-        if(self::$driver == false){
-            self::$driver = new Driver;
+        # 判断MVC驱动是否被实例化
+        if(!is_object(self::$mvc_driver)){
+            self::$mvc_driver = new self::$mvc_driver;
+        }
+        # 判断资源路由驱动是否被实例化
+        if(!is_object(self::$resources_driver)){
+            self::$resources_driver = new self::$resources_driver;
         }
         # 调用回调
         if($callback!=null){
             $callback(self::$app,self::$controller,self::$action);
         }
         # 调用接口
-        if(self::$driver -> check(self::$app,self::$controller,self::$action)){
+        if(self::$mvc_driver -> check(self::$app,self::$controller,self::$action)){
             # 启动程序
-            return self::$driver -> start(self::$app,self::$controller,self::$action);
-        }else if(Resources::check()){
-            # 寻找资源路由
-            return Resources::out();
-            # 结束程序
-            exit();
+            return self::$mvc_driver -> start(self::$app,self::$controller,self::$action);
+        }else if(self::$resources_driver -> check()){
+            # 响应资源
+            self::$resources_driver -> out();
         }else{
             throw new \Exception('找不到路由'.self::$app.','.self::$controller.','.self::$action);
             # 抛异常找不到路由
         }
     }
-    # 拆分uri
+
+    /**
+     * 拆分URL
+     */
     public static function explode_uri()
     {
         # 判断是否为首页
@@ -134,6 +155,25 @@ class Route{
     {
         return self::$driver;
     }
+
+    /**
+     * 设置资源路由驱动
+     * @param string | object $class
+     */
+    public static function set_resources_driver($class)
+    {
+        self::$resources_driver = $class;
+    }
+
+    /**
+     * 获取资源路由
+     * @return string | object
+     */
+    public static function get_resources_driver()
+    {
+        return self::$resources_driver;
+    }
+
     /**
      * 设置url分隔符
      * @param string $key_word
@@ -203,31 +243,5 @@ class Route{
     public static function get_default_app()
     {
         return self::$app;
-    }
-    public static function upload(){
-        include ROOT_PATH."common/umeditor/php/Uploader.class.php";
-        //上传配置
-        $config = array(
-            "savePath" => "/upload/umeditor/",             //存储文件夹
-            "maxSize" => 1000 ,                   //允许的文件最大尺寸，单位KB
-            "allowFiles" => array( ".gif" , ".png" , ".jpg" , ".jpeg" , ".bmp" )  //允许的文件格式
-        );
-        // 上传文件保存目录
-        $Path = ROOT_PATH."public/upload/umeditor/";
-        // 背景保存在临时目录中
-        $config[ "savePath" ] = $Path;
-        $up = new Uploader( "upfile" , $config );
-        $type = $_REQUEST['type'];
-        $callback=$_GET['callback'];
-
-        $info = $up->getFileInfo();
-        /**
-         * 返回数据
-         */
-        if($callback) {
-            exit('<script>'.$callback.'('.json_encode($info).')</script>');
-        } else {
-            exit(json_encode($info));
-        }
     }
 }

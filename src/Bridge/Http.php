@@ -1,8 +1,8 @@
 <?php
-namespace Itxiao6\Route;
+namespace Itxiao6\Route\Bridge;
 /**
  * Class Http
- * @package Itxiao6\Route
+ * @package Itxiao6\Route\Bridge
  */
 class Http{
     /**
