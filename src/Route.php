@@ -96,8 +96,10 @@ class Route{
             # 定义uri
             $result = [];
         }
+        # 获取绑定的域名
+        $app = Host::get_app($_SERVER['HTTP_HOST']);
         # 判断是否存在域名绑定
-        if($app = Host::get_app($_SERVER['HTTP_HOST'])){
+        if($app != '' && $app != false && $app != null){
             # 插入应用名
             array_unshift($result,$app);
         }

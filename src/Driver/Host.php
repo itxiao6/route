@@ -15,6 +15,10 @@ class Host implements \Itxiao6\Route\Interfaces\Host
      */
     public static function get_app($host)
     {
-        return Config::get('host',$host);
+        if($host == null || $host == ''){
+            return false;
+        }else{
+            return Config::get('host',$host);
+        }
     }
 }

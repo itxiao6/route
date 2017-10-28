@@ -6,21 +6,68 @@ namespace Itxiao6\Route\Bridge;
  */
 class Http{
     /**
+     * 定义请求
+     * @var null
+     */
+    public static $request = null;
+    /**
+     * 定义响应
+     * @var null
+     */
+    public static $response = null;
+
+    /**
+     * 设置请求
+     * @param $request
+     * @param $response
+     */
+    public static function set_request($request,$response)
+    {
+        self::$request = $request;
+        self::$response = $response;
+    }
+    /**
+     * 输出内容
+     * @param $content
+     */
+    public static function output($content)
+    {
+        if(defined('IS_SWOOLE') && IS_SWOOLE===true){
+            # 设置协议头
+            self::$response->header("Content-Type", "text/html");
+            # SWOOLE 模式
+            self::$response->write($content);
+            # 发送状态码
+            self::$response->status(200);
+            # 结束请求
+            self::$response->end('');
+        }else{
+            # 普通模式
+            exit($content);
+        }
+    }
+
+    /**
      * 请求获取url
      * @param string $key_word 分隔符
      * @return bool|string
      */
     public static function get_uri($key_word = '/')
     {
-//        if(isset($_SERVER['REQUEST_URI'])){
-            $uri = $_SERVER['REQUEST_URI'];
-//        }else{
-//            if(isset($_SERVER['argv'])){
-//                $uri = $_SERVER['PHP_SELF'].'?'.$_SERVER['argv'][0];
-//            }else{
-//                $uri = $_SERVER['PHP_SELF'].'?'.$_SERVER['QUERY_STRING'];
-//            }
-//        }
+        if(defined('IS_SWOOLE') && IS_SWOOLE===true){
+            $uri = self::$request -> server['request_uri'];
+        }else{
+            //        if(isset($_SERVER['REQUEST_URI'])){
+                $uri = $_SERVER['REQUEST_URI'];
+    //        }else{
+    //            if(isset($_SERVER['argv'])){
+    //                $uri = $_SERVER['PHP_SELF'].'?'.$_SERVER['argv'][0];
+    //            }else{
+    //                $uri = $_SERVER['PHP_SELF'].'?'.$_SERVER['QUERY_STRING'];
+    //            }
+    //        }
+        }
+
         # 过滤后缀
         $uri = preg_replace('!\.aspx|\.php|\.html|\.htmls|\.aspx|\.jsp|\.asp!','',$uri);
         # 过滤GET 参数
@@ -240,12 +287,20 @@ class Http{
             505 => 'HTTP Version Not Supported',
             509 => 'Bandwidth Limit Exceeded'
         );
+
         if(isset($_status[$code])) {
-            header('HTTP/1.1 '.$code.' '.$_status[$code]);
-            # 确保FastCGI模式下正常
-            header('Status:'.$code.' '.$_status[$code]);
+            if(defined('IS_SWOOLE') && IS_SWOOLE===true){
+                # SWOOLE 模式
+                self::$response->status($code);
+                # 结束请求
+                self::$response->end('');
+            }else{
+                # 普通模式
+                header('HTTP/1.1 '.$code.' '.$_status[$code]);
+                # 确保FastCGI模式下正常
+                header('Status:'.$code.' '.$_status[$code]);
+            }
         }
-        exit();
     }
     /**
      * 判断是手机还是PC

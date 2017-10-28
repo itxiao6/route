@@ -71,8 +71,14 @@ class Resources implements \Itxiao6\Route\Interfaces\Resources
      */
     public function out()
     {
-        # 获取url
-        $url = Http::get_url();
+        # 判断是否为Swoole 模板
+        if(defined('IS_SWOOLE') && IS_SWOOLE===true){
+            # 获取swoole url信息
+            $url = Http::$request -> server['request_uri'];
+        }else{
+            # 获取url
+            $url = Http::get_url();
+        }
         # 安全过滤
         $this -> Authcheck($url);
         # 获取目录名
@@ -99,8 +105,14 @@ class Resources implements \Itxiao6\Route\Interfaces\Resources
      */
     public function check()
     {
-        # 获取url
-        $url = Http::get_url();
+        # 判断是否为Swoole 模板
+        if(defined('IS_SWOOLE') && IS_SWOOLE===true){
+            # 获取swoole url信息
+            $url = Http::$request -> server['request_uri'];
+        }else{
+            # 获取url
+            $url = Http::get_url();
+        }
         # 安全过滤
         $this -> Authcheck($url);
         # 获取目录名
