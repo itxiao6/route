@@ -130,7 +130,7 @@ class Http{
      * @return bool
      */
     public static function IS_PUT(){
-        return REQUEST_METHOD =='PUT' ? true : false;
+        return self::REQUEST_METHOD() =='PUT' ? true : false;
     }
     /**
      * [ isWechat 数组转换成XML ]
@@ -145,7 +145,7 @@ class Http{
      * @return bool
      */
     public static function IS_POST(){
-        return REQUEST_METHOD =='POST' ? true : false;
+        return self::REQUEST_METHOD() =='POST' ? true : false;
     }
     /**
      * 是否为AJAX 请求
@@ -159,7 +159,7 @@ class Http{
      * @return bool
      */
     public static function IS_GET(){
-        return REQUEST_METHOD =='GET' ? true : false;
+        return self::REQUEST_METHOD() =='GET' ? true : false;
     }
     /**
      * getClientIp 获取客户端ip
@@ -223,7 +223,7 @@ class Http{
      * @return bool
      */
     public static function IS_DELETE(){
-        return REQUEST_METHOD =='DELETE' ? true : false;
+        return self::REQUEST_METHOD() =='DELETE' ? true : false;
     }
     /**
      * 发送HTTP状态
