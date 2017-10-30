@@ -10,6 +10,11 @@ use Reflection;
  */
 class MVC implements \Itxiao6\Route\Interfaces\MVC
 {
+    /**
+     * 控制器组
+     * @var array
+     */
+    protected static $controller = [];
 
     /**
      * 启动MVC
@@ -22,10 +27,13 @@ class MVC implements \Itxiao6\Route\Interfaces\MVC
     {
         # 组合类名
         $controller_class = '\App\\'.$app.'\\Controller\\'.$controller;
-        # 实例化控制器
-        $controller = new $controller_class;
+        # 判断是否已经实例化过了
+        if(!is_object(self::$controller[$controller_class])){
+            # 实例化控制器
+            self::$controller[$controller_class] = new $controller_class;
+        }
         # 调用方法
-        return $controller -> $action();
+        return self::$controller[$controller_class] -> $action();
     }
 
     /**
@@ -43,6 +51,7 @@ class MVC implements \Itxiao6\Route\Interfaces\MVC
         if(!class_exists($controller_class)){
             return false;
         }
+        return true;
         # 获取控制器的映射
         $result = new ReflectionClass($controller_class);
         # 获取控制器下的方法

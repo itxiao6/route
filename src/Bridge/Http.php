@@ -30,13 +30,15 @@ class Http{
      * 输出内容
      * @param $content
      */
-    public static function output($content)
+    public static function output($content,$type = null)
     {
         if(defined('IS_SWOOLE') && IS_SWOOLE===true){
             # 设置协议头
-            self::$response->header("Content-Type", "text/html");
-            # SWOOLE 模式
-            self::$response->write($content);
+            self::$response->header("Content-Type",($type===null)?"text/html":$type);
+            if($content!=''){
+                # SWOOLE 模式
+                self::$response->write($content);
+            }
             # 发送状态码
             self::$response->status(200);
             # 结束请求
@@ -57,15 +59,7 @@ class Http{
         if(defined('IS_SWOOLE') && IS_SWOOLE===true){
             $uri = self::$request -> server['request_uri'];
         }else{
-            //        if(isset($_SERVER['REQUEST_URI'])){
-                $uri = $_SERVER['REQUEST_URI'];
-    //        }else{
-    //            if(isset($_SERVER['argv'])){
-    //                $uri = $_SERVER['PHP_SELF'].'?'.$_SERVER['argv'][0];
-    //            }else{
-    //                $uri = $_SERVER['PHP_SELF'].'?'.$_SERVER['QUERY_STRING'];
-    //            }
-    //        }
+            $uri = $_SERVER['REQUEST_URI'];
         }
 
         # 过滤后缀
@@ -158,8 +152,7 @@ class Http{
      * @return bool
      */
     public static function IS_AJAX(){
-        return (isset($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) == 'xmlhttprequest') ||
-            strtolower($_POST['request_method']) == 'ajax' || strtolower($_GET['request_method']) == 'ajax';
+        return \Whoops\Util\Misc::isAjaxRequest();
     }
     /**
      * 是否为GET 请求

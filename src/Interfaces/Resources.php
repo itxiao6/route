@@ -15,7 +15,7 @@ interface Resources
     /**
      * 响应内容
      */
-    public function out();
+    public function output();
     /**
      * 获取文件响应类型
      * @return array

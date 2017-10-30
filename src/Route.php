@@ -14,20 +14,35 @@ class Route{
      */
     protected static $uri = '';
     /**
-     * 模块
+     * 默认模块名
      * @var string
      */
-    protected static $app = 'Home';
+    protected static $default_app = 'Home';
+    /**
+     * 模块名
+     * @var string
+     */
+    protected static $app = '';
+    /**
+     * 默认控制器
+     * @var string
+     */
+    protected static $default_controller = 'Index';
     /**
      * 控制器
      * @var string
      */
-    protected static $controller = 'Index';
+    protected static $controller = '';
+    /**
+     * 默认操作
+     * @var string
+     */
+    protected static $default_action = 'index';
     /**
      * 操作
      * @var string
      */
-    protected static $action = 'index';
+    protected static $action = '';
     /**
      * 默认用来拆分路由的关键字
      * @var string
@@ -66,19 +81,19 @@ class Route{
         if(!is_object(self::$resources_driver)){
             self::$resources_driver = new self::$resources_driver;
         }
-        # 调用回调
-        if($callback!=null){
-            $callback(self::$app,self::$controller,self::$action);
-        }
         # 调用接口
         if(self::$mvc_driver -> check(self::$app,self::$controller,self::$action)){
+            # 调用回调
+            if($callback!=null){
+                $callback(self::$app,self::$controller,self::$action);
+            }
             # 启动程序
             return self::$mvc_driver -> start(self::$app,self::$controller,self::$action);
         }else if(self::$resources_driver -> check()){
             # 响应资源
-            self::$resources_driver -> out();
+            self::$resources_driver -> output();
         }else{
-            throw new \Exception('找不到路由'.self::$app.','.self::$controller.','.self::$action);
+//            throw new \Exception('找不到路由'.self::$app.','.self::$controller.','.self::$action);
             # 抛异常找不到路由
         }
     }
@@ -107,33 +122,36 @@ class Route{
         switch(count($result)){
             case 3:
                 # 应用名
-                self::set_default_app($result[0]);
+                self::set_app($result[0]);
                 # 控制器名
-                self::set_default_controller($result[1]);
+                self::set_controller($result[1]);
                 # 操作名
-                self::set_default_action($result[2]);
+                self::set_action($result[2]);
                 break;
             case 2:
                 # 设置应用名
-                self::set_default_app($result[0]);
+                self::set_app($result[0]);
                 # 设置控制器名
-                self::set_default_controller($result[1]);
+                self::set_controller($result[1]);
                 break;
             case 1:
                 # 只设置应用名
-                self::set_default_app($result[0]);
+                self::set_app($result[0]);
                 break;
             case 0:
-                # 什么都不设置
+                # 获取默认设置
+                self::set_app(self::get_default_app());
+                self::set_action(self::get_default_action());
+                self::set_controller(self::get_default_controller());
                 break;
             default:
                 if(count($result) > 3){
                     # 应用名
-                    self::set_default_app($result[0]);
+                    self::set_app($result[0]);
                     # 控制器名
-                    self::set_default_controller($result[1]);
+                    self::set_controller($result[1]);
                     # 操作名
-                    self::set_default_action($result[2]);
+                    self::set_action($result[2]);
                 }
                 # 什么都不设置
                 break;
@@ -207,7 +225,7 @@ class Route{
      */
     public static function set_default_controller($name)
     {
-        self::$controller = $name;
+        self::$default_controller = $name;
     }
 
     /**
@@ -216,7 +234,7 @@ class Route{
      */
     public static function get_default_controller()
     {
-        return self::$controller;
+        return self::$default_controller;
     }
 
     /**
@@ -225,7 +243,7 @@ class Route{
      */
     public static function set_default_action($name)
     {
-        self::$action = $name;
+        self::$default_action = $name;
     }
 
     /**
@@ -234,7 +252,7 @@ class Route{
      */
     public static function get_default_action()
     {
-        return self::$action;
+        return self::$default_action;
     }
 
     /**
@@ -243,7 +261,7 @@ class Route{
      */
     public static function set_default_app($name)
     {
-        self::$app = $name;
+        self::$default_app = $name;
     }
 
     /**
@@ -251,6 +269,59 @@ class Route{
      * @return string
      */
     public static function get_default_app()
+    {
+        return self::$default_app;
+    }
+    /**
+     * 设置控制器
+     * @param $name
+     */
+    public static function set_controller($name)
+    {
+        self::$controller = $name;
+    }
+
+    /**
+     * 获取控制器
+     * @return string
+     */
+    public static function get_controller()
+    {
+        return self::$controller;
+    }
+
+    /**
+     * 设置操作名
+     * @param $name
+     */
+    public static function set_action($name)
+    {
+        self::$action = $name;
+    }
+
+    /**
+     * 获取的操作名
+     * @return string
+     */
+    public static function get_action()
+    {
+        return self::$action;
+    }
+
+    /**
+     * 设置模块名
+     * @param $name
+     */
+    public static function set_app($name)
+    {
+        self::$app = $name;
+    }
+
+    /**
+     * 获取模块名
+     * @return string
+     */
+    public static function get_app()
     {
         return self::$app;
     }
