@@ -96,6 +96,18 @@ class Http{
         # 返回url
         return $url;
     }
+
+    /**
+     * 获取请求的域名
+     */
+    public static function get_host()
+    {
+        if(defined('IS_SWOOLE') && IS_SWOOLE===true){
+            return self::$request -> server['http_host'];
+        }else{
+            return $_SERVER['REQUEST_URI'];
+        }
+    }
     /**
      * Http重定向
      * @param $url
