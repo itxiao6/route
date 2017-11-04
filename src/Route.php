@@ -112,7 +112,7 @@ class Route{
             $result = [];
         }
         # 获取绑定的域名
-        $app = Host::get_app($_SERVER['HTTP_HOST']);
+        $app = Host::get_app(Http::get_host());
         # 判断是否存在域名绑定
         if($app != '' && $app != false && $app != null){
             # 插入应用名
