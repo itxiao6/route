@@ -22,7 +22,7 @@ class Route{
      * 模块名
      * @var string
      */
-    protected static $app = '';
+    protected static $app = 'Home';
     /**
      * 默认控制器
      * @var string
@@ -32,7 +32,7 @@ class Route{
      * 控制器
      * @var string
      */
-    protected static $controller = '';
+    protected static $controller = 'Index';
     /**
      * 默认操作
      * @var string
@@ -42,7 +42,7 @@ class Route{
      * 操作
      * @var string
      */
-    protected static $action = '';
+    protected static $action = 'index';
     /**
      * 默认用来拆分路由的关键字
      * @var string
@@ -118,6 +118,7 @@ class Route{
             # 插入应用名
             array_unshift($result,$app);
         }
+        var_dump($app);
         # 解析参数
         switch(count($result)){
             case 3:
