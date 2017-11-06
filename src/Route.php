@@ -118,7 +118,6 @@ class Route{
             # 插入应用名
             array_unshift($result,$app);
         }
-        var_dump($app);
         # 解析参数
         switch(count($result)){
             case 3:
