@@ -7,24 +7,49 @@ namespace Itxiao6\Route\Bridge;
 class Http{
     /**
      * 定义请求
-     * @var null
+     * @var null | object
      */
-    public static $request = null;
+    protected static $request = null;
     /**
      * 定义响应
-     * @var null
+     * @var null | object
      */
-    public static $response = null;
+    protected static $response = null;
 
     /**
      * 设置请求
-     * @param $request
      * @param $response
      */
-    public static function set_request($request,$response)
+    public static function set_request($request)
     {
         self::$request = $request;
+    }
+
+    /**
+     * 获取请求
+     * @return null|object
+     */
+    public static function get_request()
+    {
+        return self::$request;
+    }
+
+    /**
+     * 设置响应
+     * @param $response
+     */
+    public static function set_response($response)
+    {
         self::$response = $response;
+    }
+
+    /**
+     * 获取响应
+     * @return null|object
+     */
+    public static function get_response()
+    {
+        return self::$response;
     }
     /**
      * 输出内容
