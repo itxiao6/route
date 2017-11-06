@@ -105,7 +105,7 @@ class Http{
         if(defined('IS_SWOOLE') && IS_SWOOLE===true){
             return self::$request -> header['host'];
         }else{
-            return $_SERVER['REQUEST_URI'];
+            return $_SERVER['HTTP_HOST'];
         }
     }
     /**
