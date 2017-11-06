@@ -103,7 +103,7 @@ class Http{
     public static function get_host()
     {
         if(defined('IS_SWOOLE') && IS_SWOOLE===true){
-            return self::$request -> server['http_host'];
+            return self::$request -> header['host'];
         }else{
             return $_SERVER['REQUEST_URI'];
         }
