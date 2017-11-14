@@ -59,7 +59,7 @@ class Http{
     {
         if(defined('IS_SWOOLE') && IS_SWOOLE===true){
             # 设置协议头
-            self::$response->header("Content-Type",($type===null)?"text/html":$type);
+            self::$response->header("Content-Type",($type===null)?"text/html":$type.";charset=utf-8");
             if($content!=''){
                 # SWOOLE 模式
                 self::$response->write($content);
