@@ -63,12 +63,17 @@ class Route{
 
     /**
      * 初始化路由
+     * @param $request
+     * @param $response
      * @param \Closure|null $callback
      * @return mixed
-     * @throws Exception
      */
-    public static function init(\Closure $callback = null)
+    public static function init($request,$response,\Closure $callback = null)
     {
+        # 设置请求
+        Http::set_request($request);
+        # 设置响应
+        Http::set_response($response);
         # 获取请求的url
         self::$uri = Http::get_uri(self::$keyword);
         # 拆分数据
