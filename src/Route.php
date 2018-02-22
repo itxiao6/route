@@ -9,325 +9,144 @@ use Itxiao6\Route\Driver\Resources;
 # 路由类
 class Route{
     /**
-     * 路由
-     * @var string
+     * 请求
+     * @var mixed
      */
-    protected static $uri = '';
+    protected $request = null;
     /**
-     * 默认模块名
-     * @var string
+     * 响应
+     * @var mixed
      */
-    protected static $default_app = 'Home';
+    protected $response = null;
     /**
-     * 模块名
-     * @var string
+     * 路由配置
+     * @var array
      */
-    protected static $app = 'Home';
-    /**
-     * 默认控制器
-     * @var string
-     */
-    protected static $default_controller = 'Index';
-    /**
-     * 控制器
-     * @var string
-     */
-    protected static $controller = 'Index';
-    /**
-     * 默认操作
-     * @var string
-     */
-    protected static $default_action = 'index';
-    /**
-     * 操作
-     * @var string
-     */
-    protected static $action = 'index';
-    /**
-     * 默认用来拆分路由的关键字
-     * @var string
-     */
-    public static $keyword = '/';
+    protected $config = [
+        'keyword'=>'/',
+        'default_app'=>'Home',
+        'default_controller'=>'Index',
+        'default_action'=>'index',
+    ];
 
     /**
-     * MAC驱动
-     * @var string
+     * 匹配路由
+     * @param \Closure $callback
      */
-    protected static $mvc_driver = MVC::class;
-
-    /**
-     * 资源路由驱动
-     * @var string
-     */
-    protected static $resources_driver = Resources::class;
-
-    /**
-     * 初始化路由
-     * @param $request
-     * @param $response
-     * @param \Closure|null $callback
-     * @return mixed
-     */
-    public static function init($request,$response,\Closure $callback = null)
+    public function start($callback = null)
     {
-        # 设置请求
-        Http::set_request($request);
-        # 设置响应
-        Http::set_response($response);
-        # 获取请求的url
-        self::$uri = Http::get_uri(self::$keyword);
-        # 拆分数据
-        self::explode_uri();
-        # 判断MVC驱动是否被实例化
-        if(!is_object(self::$mvc_driver)){
-            self::$mvc_driver = new self::$mvc_driver;
-        }
-        # 判断资源路由驱动是否被实例化
-        if(!is_object(self::$resources_driver)){
-            self::$resources_driver = new self::$resources_driver;
-        }
-        # 调用接口
-        if(self::$mvc_driver -> check(self::$app,self::$controller,self::$action)){
-            # 调用回调
-            if($callback!=null){
-                $callback(self::$app,self::$controller,self::$action);
-            }
-            # 启动程序
-            return self::$mvc_driver -> start(self::$app,self::$controller,self::$action);
-        }else if(self::$resources_driver -> check()){
-            # 响应资源
-            self::$resources_driver -> output();
-        }else{
-//            throw new \Exception('找不到路由'.self::$app.','.self::$controller.','.self::$action);
-            # 抛异常找不到路由
-        }
+        $mvc = $this -> explode_uri($this -> request -> RawRequest() -> server['request_uri']);
+        return $callback($mvc['app'],$mvc['controller'],$mvc['action']);
     }
-
     /**
      * 拆分URL
+     * @param $uri
+     * @return array
      */
-    public static function explode_uri()
+    protected function explode_uri($uri)
     {
+        $app = $this -> config('default_app');
+        $controller = $this -> config('default_controller');
+        $action = $this -> config('default_action');
         # 判断是否为首页
-        if(self::$uri!=''){
+        if($uri != '' && $uri != '/'){
             # 拆分uri
-            $result = explode(self::$keyword,self::$uri);
+            $result = explode($this -> config('keyword'),$uri);
         }else{
             # 定义uri
             $result = [];
-        }
-        # 获取绑定的域名
-        $app = Host::get_app(Http::get_host());
-        # 判断是否存在域名绑定
-        if($app != '' && $app != false && $app != null){
-            # 插入应用名
-            array_unshift($result,$app);
         }
         # 解析参数
         switch(count($result)){
             case 3:
                 # 应用名
-                self::set_app($result[0]);
+                $app = $result[0];
                 # 控制器名
-                self::set_controller($result[1]);
+                $controller = $result[1];
                 # 操作名
-                self::set_action($result[2]);
+                $action = $result[2];
                 break;
             case 2:
                 # 设置应用名
-                self::set_app($result[0]);
+                $app = $result[0];
                 # 设置控制器名
-                self::set_controller($result[1]);
+                $controller = $result[1];
                 break;
             case 1:
                 # 只设置应用名
-                self::set_app($result[0]);
+                $app = $result[0];
                 break;
             case 0:
-                # 获取默认设置
-                self::set_app(self::get_default_app());
-                self::set_action(self::get_default_action());
-                self::set_controller(self::get_default_controller());
                 break;
             default:
                 if(count($result) > 3){
                     # 应用名
-                    self::set_app($result[0]);
+                    $app = $result[0];
                     # 控制器名
-                    self::set_controller($result[1]);
+                    $controller = $result[1];
                     # 操作名
-                    self::set_action($result[2]);
+                    $action = $result[2];
                 }
                 # 什么都不设置
                 break;
         }
+        return ['app'=>$app,'controller'=>$controller,'action'=>$action];
     }
 
     /**
-     * 设置自定义MVC驱动
-     * @param $driver
+     * 修改配置
+     * @param null|string|array $key
+     * @param null|mixed $value
+     * @return $this
      */
-    public function set_mvc_driver($driver)
+    public function config($key=null,$value = null)
     {
-        self::$mvc_driver = $driver;
-    }
-
-    /**
-     * 获取MVC自定义驱动
-     * @return bool
-     */
-    public function get_mvc_driver()
-    {
-        # 判断MVC驱动是否被实例化
-        if(!is_object(self::$mvc_driver)){
-            self::$mvc_driver = new self::$mvc_driver;
+        if($key === null && $value === null){
+            return $this -> config;
         }
-        return self::$mvc_driver;
-    }
-
-    /**
-     * 设置资源路由驱动
-     * @param string | object $class
-     */
-    public static function set_resources_driver($class)
-    {
-        self::$resources_driver = $class;
-    }
-
-    /**
-     * 获取资源路由
-     * @return string | object
-     */
-    public static function get_resources_driver()
-    {
-        # 判断资源路由驱动是否被实例化
-        if(!is_object(self::$resources_driver)){
-            self::$resources_driver = new self::$resources_driver;
+        if(is_array($key) && count($key) > 0 && $value === null){
+            $this -> config = $key;
         }
-        return self::$resources_driver;
+        if(is_string($key) && $value != null){
+            $this -> config[$key] = $value;
+        }
+        if(is_string($key) && $value == null){
+            return isset($this -> config[$key])?$this -> config[$key]:null;
+        }
+        return $this;
     }
 
     /**
-     * 设置url分隔符
-     * @param string $key_word
+     * 获取接口
+     * @param $request
+     * @param $response
+     * @return static
      */
-    public static function set_key_word($key_word = '/')
+    public static function getInterface($request,$response)
     {
-        self::$keyword = $key_word;
+        return new static($request,$response);
     }
 
     /**
-     * 获取默认的url 分隔符
-     * @return string
+     * 实例化路由
+     * Route constructor.
+     * @param $request
+     * @param $response
      */
-    public static function get_key_word()
+    public function __construct($request,$response)
     {
-        return self::$keyword;
+        $this -> request = $request;
+        $this -> response = $response;
     }
+
     /**
-     * 设置默认的控制器
+     * 修饰者模式
      * @param $name
+     * @param $arguments
+     * @return mixed
      */
-    public static function set_default_controller($name)
+    public static function __callStatic($name, $arguments)
     {
-        self::$default_controller = $name;
-    }
-
-    /**
-     * 获取默认的控制器
-     * @return string
-     */
-    public static function get_default_controller()
-    {
-        return self::$default_controller;
-    }
-
-    /**
-     * 设置默认的操作名
-     * @param $name
-     */
-    public static function set_default_action($name)
-    {
-        self::$default_action = $name;
-    }
-
-    /**
-     * 获取默认的操作名
-     * @return string
-     */
-    public static function get_default_action()
-    {
-        return self::$default_action;
-    }
-
-    /**
-     * 设置默认的模块名
-     * @param $name
-     */
-    public static function set_default_app($name)
-    {
-        self::$default_app = $name;
-    }
-
-    /**
-     * 获取默认的模块名
-     * @return string
-     */
-    public static function get_default_app()
-    {
-        return self::$default_app;
-    }
-    /**
-     * 设置控制器
-     * @param $name
-     */
-    public static function set_controller($name)
-    {
-        self::$controller = $name;
-    }
-
-    /**
-     * 获取控制器
-     * @return string
-     */
-    public static function get_controller()
-    {
-        return self::$controller;
-    }
-
-    /**
-     * 设置操作名
-     * @param $name
-     */
-    public static function set_action($name)
-    {
-        self::$action = $name;
-    }
-
-    /**
-     * 获取的操作名
-     * @return string
-     */
-    public static function get_action()
-    {
-        return self::$action;
-    }
-
-    /**
-     * 设置模块名
-     * @param $name
-     */
-    public static function set_app($name)
-    {
-        self::$app = $name;
-    }
-
-    /**
-     * 获取模块名
-     * @return string
-     */
-    public static function get_app()
-    {
-        return self::$app;
+        return (new static()) -> $name(...func_get_args());
     }
 }
