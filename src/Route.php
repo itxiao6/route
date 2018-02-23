@@ -147,6 +147,6 @@ class Route{
      */
     public static function __callStatic($name, $arguments)
     {
-        return (new static()) -> $name(...func_get_args());
+        return (new static()) -> $name(...$arguments);
     }
 }
