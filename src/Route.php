@@ -14,11 +14,6 @@ class Route{
      */
     protected $request = null;
     /**
-     * 响应
-     * @var mixed
-     */
-    protected $response = null;
-    /**
      * 路由配置
      * @var array
      */
@@ -122,9 +117,9 @@ class Route{
      * @param $response
      * @return static
      */
-    public static function getInterface($request,$response)
+    public static function getInterface($request)
     {
-        return new static($request,$response);
+        return new static($request);
     }
 
     /**
@@ -133,10 +128,9 @@ class Route{
      * @param $request
      * @param $response
      */
-    public function __construct($request,$response)
+    public function __construct($request)
     {
         $this -> request = $request;
-        $this -> response = $response;
     }
 
     /**
