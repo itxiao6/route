@@ -1,12 +1,11 @@
 <?php
 namespace Itxiao6\Route;
-use Exception;
-use Itxiao6\Route\Bridge\Http;
-use Itxiao6\Route\Driver\Host;
-use Itxiao6\Route\Driver\MVC;
-use Itxiao6\Route\Driver\Resources;
 
-# 路由类
+/**
+ * 路由类
+ * Class Route
+ * @package Itxiao6\Route
+ */
 class Route{
     /**
      * 请求
@@ -25,8 +24,8 @@ class Route{
     ];
 
     /**
-     * 匹配路由
-     * @param \Closure $callback
+     * @param null|\Closure $callback
+     * @return mixed
      */
     public function start($callback = null)
     {
@@ -114,8 +113,7 @@ class Route{
     /**
      * 获取接口
      * @param $request
-     * @param $response
-     * @return static
+     * @return Route
      */
     public static function getInterface($request)
     {
@@ -126,7 +124,6 @@ class Route{
      * 实例化路由
      * Route constructor.
      * @param $request
-     * @param $response
      */
     public function __construct($request)
     {
